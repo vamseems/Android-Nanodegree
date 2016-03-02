@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PopMov</string>
+    <string name="action_settings">Settings</string>
+    <string name="imageURLPrefix">http://image.tmdb.org/t/p/w342/</string>
+</resources>
