@@ -32,46 +32,46 @@ public class MainActivity extends AppCompatActivity {
 
         spotifyStreamer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast toast = Toast.makeText(context, "This button will launch Spotify Streamer.", Toast.LENGTH_SHORT);
-                toast.show();
+                DisplayText((String) getText(R.string.spotify_text), context);
             }
         });
 
         scoresApp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast toast = Toast.makeText(context, "This button will launch my Scores App.", Toast.LENGTH_SHORT);
-                toast.show();
+                DisplayText((String) getText(R.string.scores_text), context);
             }
         });
 
         libraryApp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast toast = Toast.makeText(context, "This button will launch my Library App.", Toast.LENGTH_SHORT);
-                toast.show();
+                DisplayText((String) getText(R.string.library_text), context);
             }
         });
 
         buildItBigger.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast toast = Toast.makeText(context, "This button will launch my Build it Bigger App.", Toast.LENGTH_SHORT);
-                toast.show();
+                DisplayText((String) getText(R.string.bigger_text), context);
             }
         });
 
         xyzReader.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast toast = Toast.makeText(context, "This button will launch XYZ Reader App.", Toast.LENGTH_SHORT);
-                toast.show();
+                DisplayText((String) getText(R.string.xyz_text), context);
             }
         });
 
         capstoneApp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast toast = Toast.makeText(context, "This button will launch my Capstone App.", Toast.LENGTH_SHORT);
-                toast.show();
+                DisplayText((String) getText(R.string.capstone_text), context);
             }
         });
     }
+
+    void DisplayText(String s, Context context){
+        Toast toast = Toast.makeText(context, s, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

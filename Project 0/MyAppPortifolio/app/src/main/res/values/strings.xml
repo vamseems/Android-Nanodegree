@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">My App Portifolio</string>
     <string name="action_settings">Settings</string>
+    <string name="scores_text">"This button will launch my Scores App."</string>
+    <string name="xyz_text">"This button will launch XYZ Reader App."</string>
+    <string name="capstone_text">"This button will launch my Capstone App."</string>
+    <string name="spotify_text">"This button will launch Spotify Streamer."</string>
+    <string name="library_text">"This button will launch my Library App."</string>
+    <string name="bigger_text">"This button will launch my Build it Bigger App."</string>
 </resources>
