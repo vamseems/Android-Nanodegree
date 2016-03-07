@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 public class MovieAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<MovieItem> mMovies;
-    private int colWidth;
+    int colWidth;
 
     public MovieAdapter(Context context, ArrayList<MovieItem> items, int colWidth) {
         mContext = context;
@@ -55,7 +54,10 @@ public class MovieAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
+
+        // Load Movie Poster into Image View
         Picasso.with(mContext).load(mMovies.get(position).posterURL).into(imageView);
+
         return imageView;
     }
 }
