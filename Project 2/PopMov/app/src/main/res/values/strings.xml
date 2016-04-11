@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PopMov</string>
+    <string name="action_rating">Sort by Highest Rated</string>
+    <string name="action_popularity">Sort by Popularity</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="imageURLPrefix">http://image.tmdb.org/t/p/w342/</string>
+    <string name="backDropURLPrefix">http://image.tmdb.org/t/p/w780/</string>
+    <string name="title_activity_detailed">DetailedActivity</string>
+    <string name="detailed_poster_image_view">Movie Poster</string>
+    <string name="detailed_back_drop_image_view">BackDrop of Movie</string>
+    <string name="detailed_movie_title_placeholder">Title</string>
+    <string name="detailed_movie_release_date_placeholder">Release Date</string>
+    <string name="detailed_rating_number_placeholder">0.0</string>
+    <string name="detailed_plot_title">Plot</string>
+    <string name="action_settings">Settings</string>
+</resources>

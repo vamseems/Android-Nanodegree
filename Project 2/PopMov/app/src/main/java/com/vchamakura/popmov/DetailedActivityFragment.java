@@ -6,10 +6,12 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -28,21 +30,21 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-public class DetailedActivity extends AppCompatActivity {
+public class DetailedActivityFragment extends Fragment {
     private static final String TAG = DetailedActivity.class.getName();
 
-    private static final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
-            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+    View rootView;
+
+    public DetailedActivityFragment() {
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detailed);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
+        rootView = inflater.inflate(R.layout.fragment_detailed, container, false);
         // Get the intent
-        Intent intent = getIntent();
+        Intent intent = getActivity().getIntent();
 
         // Get Extra strings from the intent
         String mTitle = intent.getStringExtra("movie_title");
@@ -50,15 +52,16 @@ public class DetailedActivity extends AppCompatActivity {
         String movieID = intent.getStringExtra("movie_id");
 
         // Set the movie poster & title passed on from the previous activity
-        ImageView poster = (ImageView) findViewById(R.id.poster);
-        Picasso.with(this).load(mPosterURL).into(poster);
-        setTitle(mTitle);
+        ImageView poster = (ImageView) rootView.findViewById(R.id.poster);
+        Picasso.with(getContext()).load(mPosterURL).into(poster);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActivity().setTitle(mTitle);
+
 
         // Call the Async Task to fetch the movie data from the API
         new MovieDetails().execute("https://api.themoviedb.org/3/movie/" + movieID + "?api_key=" +
                 BuildConfig.TMDB_API_KEY);
+        return rootView;
     }
 
     public class MovieDetails extends AsyncTask<String, Drawable, MovieDetailItem> {
@@ -85,25 +88,28 @@ public class DetailedActivity extends AppCompatActivity {
         protected void onPostExecute(MovieDetailItem movie) {
             super.onPostExecute(movie);
 
+            final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
+                    "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
             // Parse the release date to desired(Month 'YYYY) format
             int year = Integer.parseInt(movie.releaseDate.split("-")[0]);
             int month = Integer.parseInt(movie.releaseDate.split("-")[1]);
             String releaseDate = months.get(month - 1) + " " + year;
 
             // Get all the required elements in the view
-            ImageView backDrop = (ImageView) findViewById(R.id.backDrop);
-            TextView movieTitle = (TextView) findViewById(R.id.detailed_movie_title);
-            TextView movieDate = (TextView) findViewById(R.id.detailed_movie_release_date);
-            TextView rating = (TextView) findViewById(R.id.detailed_movie_ratings_number);
-            RatingBar ratingBar = (RatingBar) findViewById(R.id.detailed_movie_ratings);
-            TextView moviePlot = (TextView) findViewById(R.id.detailed_movie_plot);
+            ImageView backDrop = (ImageView) rootView.findViewById(R.id.backDrop);
+            TextView movieTitle = (TextView) rootView.findViewById(R.id.detailed_movie_title);
+            TextView movieDate = (TextView) rootView.findViewById(R.id.detailed_movie_release_date);
+            TextView rating = (TextView) rootView.findViewById(R.id.detailed_movie_ratings_number);
+            RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.detailed_movie_ratings);
+            TextView moviePlot = (TextView) rootView.findViewById(R.id.detailed_movie_plot);
 
             // Change color of the stars in the RatingsBar
             LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
             stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
 
             // Set the elements in the view to the movie details
-            Picasso.with(DetailedActivity.this).load(movie.backDrop).into(backDrop);
+            Picasso.with(getContext()).load(movie.backDrop).into(backDrop);
             movieTitle.setText(movie.title);
             movieDate.setText(releaseDate);
             rating.setText(movie.voteAverage);
