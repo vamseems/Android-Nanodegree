@@ -16,9 +16,11 @@ public class MovieDetailItem {
     final String voteAverage;
     final String releaseDate;
     final ArrayList<JSONObject> videos;
+    final ArrayList<JSONObject> reviews;
 
     public MovieDetailItem(String title, String movieID, String posterURL, String backDrop, String plot,
-                     String voteAverage, String releaseDate, ArrayList<JSONObject> videos) {
+                     String voteAverage, String releaseDate, ArrayList<JSONObject> videos,
+                           ArrayList<JSONObject> reviews) {
         this.title = title;
         this.movieID = movieID;
         this.posterURL = posterURL;
@@ -27,6 +29,7 @@ public class MovieDetailItem {
         this.voteAverage = voteAverage;
         this.releaseDate = releaseDate;
         this.videos = videos;
+        this.reviews = reviews;
     }
 
 }

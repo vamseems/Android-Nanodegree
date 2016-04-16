@@ -37,8 +37,8 @@ public class MovieAdapter extends BaseAdapter {
     }
 
     public long getItemId(int position) {
-        if (mMovies.size() > 0)
-            return Long.parseLong(mMovies.get(position).movieID);
+//        if (mMovies.size() > 0)
+//            return Long.parseLong(mMovies.get(position).movieID);
         return 0;
     }
 

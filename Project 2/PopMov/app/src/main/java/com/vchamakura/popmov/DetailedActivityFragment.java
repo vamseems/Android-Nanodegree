@@ -43,9 +43,15 @@ public class DetailedActivityFragment extends Fragment {
     private static final String backDropURLPrefix = "http://image.tmdb.org/t/p/w780/";
 
     View rootView;
+
     ArrayList<JSONObject> mTrailers = new ArrayList<>();
+    ArrayList<JSONObject> mReviews = new ArrayList<>();
+
     ListView trailersList;
+    ListView reviewList;
+
     TrailerAdapter trailerAdapter;
+    ReviewAdapter reviewAdapter;
 
     public DetailedActivityFragment() {
     }
@@ -71,16 +77,18 @@ public class DetailedActivityFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
 
-        // TODO - Set the list adapeter and Create the LIST adapter
         trailersList = (ListView) rootView.findViewById(R.id.detail_trailers);
+        reviewList = (ListView) rootView.findViewById(R.id.detail_reviews);
+
         trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
         trailersList.setAdapter(trailerAdapter);
 
+        reviewAdapter = new ReviewAdapter(getContext(), mReviews);
+        reviewList.setAdapter(reviewAdapter);
 
         trailersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO - Get the trailer detail to pass to youtube
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 try {
                     intent.setData(Uri.parse("http://www.youtube.com/watch?v=" +
@@ -117,20 +125,36 @@ public class DetailedActivityFragment extends Fragment {
         protected MovieDetailItem doInBackground(String... movieID) {
             MovieDetailItem movie = null;
             ArrayList<JSONObject> videos = new ArrayList<>();
+            ArrayList<JSONObject> reviews = new ArrayList<>();
             try {
                 // Fetch & parse movie JSON data.
                 JSONObject movieJSON = downloadData("https://api.themoviedb.org/3/movie/"
                         + movieID[0] + "?api_key=" + BuildConfig.TMDB_API_KEY);
+                // Fetch & parse videos JSON data.
                 JSONObject videosJSON = downloadData("https://api.themoviedb.org/3/movie/"
                         + movieID[0] + "/videos?api_key=" + BuildConfig.TMDB_API_KEY);
+                // Fetch & parse reviews JSON data.
+                JSONObject reviewsJSON = downloadData("https://api.themoviedb.org/3/movie/"
+                        + movieID[0] + "/reviews?api_key=" + BuildConfig.TMDB_API_KEY);
 
-                JSONArray results = videosJSON.getJSONArray("results");
-                for (int i = 0 ; i < results.length() ; i++) {
+                // Parse video data
+                JSONArray videoResults = videosJSON.getJSONArray("results");
+                for (int i = 0 ; i < videoResults.length() ; i++) {
                     JSONObject video = new JSONObject();
-                    video.put("id", ((JSONObject)results.get(i)).getString("key"));
-                    video.put("site", ((JSONObject)results.get(i)).getString("site"));
-                    video.put("type", ((JSONObject)results.get(i)).getString("type"));
+                    video.put("id", ((JSONObject)videoResults.get(i)).getString("key"));
+                    video.put("site", ((JSONObject)videoResults.get(i)).getString("site"));
+                    video.put("type", ((JSONObject)videoResults.get(i)).getString("type"));
                     videos.add(video);
+                }
+
+                // Parse review data
+                JSONArray reviewResults = reviewsJSON.getJSONArray("results");
+                for (int i = 0 ; i < reviewResults.length() ; i++) {
+                    JSONObject review = new JSONObject();
+                    review.put("author", ((JSONObject)reviewResults.get(i)).getString("author"));
+                    review.put("content", ((JSONObject)reviewResults.get(i)).getString("content"));
+                    review.put("url", ((JSONObject)reviewResults.get(i)).getString("url"));
+                    reviews.add(review);
                 }
 
                 movie = new MovieDetailItem(movieJSON.getString("original_title"),
@@ -138,7 +162,7 @@ public class DetailedActivityFragment extends Fragment {
                         movieJSON.getString("poster_path"), backDropURLPrefix +
                         movieJSON.getString("backdrop_path"), movieJSON.getString("overview"),
                         movieJSON.getString("vote_average"), movieJSON.getString("release_date"),
-                        videos);
+                        videos, reviews);
 
             } catch (IOException | JSONException e) {
                 Log.e(TAG, e.toString());
@@ -154,6 +178,11 @@ public class DetailedActivityFragment extends Fragment {
             trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
             trailerAdapter.notifyDataSetChanged();
             trailersList.setAdapter(trailerAdapter);
+
+            mReviews = movie.reviews;
+            reviewAdapter = new ReviewAdapter(getContext(), mReviews);
+            reviewAdapter.notifyDataSetChanged();
+            reviewList.setAdapter(reviewAdapter);
 
             final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
                     "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.vchamakura.popmov.DetailedActivity" >
+    tools:context="com.vchamakura.popmov.DetailedActivity"
+    tools:showIn="@layout/activity_detailed">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -125,12 +126,34 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/detail_trailers"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="16dp"
             android:layout_below="@+id/detailed_video_title" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/detailed_review_title"
+            android:textColor="@color/black"
+            android:id="@+id/detailed_review_title"
+            android:layout_below="@+id/detail_trailers"
+            android:layout_marginTop="16dp"
+            android:layout_alignLeft="@+id/detail_trailers"
+            android:layout_alignStart="@+id/detail_trailers" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minHeight="128dp"
+            android:id="@+id/detail_reviews"
+            android:layout_marginTop="8dp"
+            android:divider="@color/primary"
+            android:layout_below="@+id/detailed_review_title"
+            android:layout_alignLeft="@+id/detailed_review_title"
+            android:layout_alignStart="@+id/detailed_review_title" />
 
 
     </RelativeLayout>

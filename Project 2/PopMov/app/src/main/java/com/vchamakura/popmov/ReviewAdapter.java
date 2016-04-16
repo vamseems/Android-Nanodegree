@@ -5,10 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,27 +14,27 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by vchamakura on 16/04/16 at 9:53 PM.
+ * Created by vchamakura on 17/04/16 at 12:01 AM.
  * Copyrights reserved to Vamsee Chamakura
  */
-public class TrailerAdapter extends BaseAdapter {
+public class ReviewAdapter extends BaseAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
-    private ArrayList<JSONObject> mTrailers;
+    private ArrayList<JSONObject> mReviews;
 
-    public TrailerAdapter(Context context, ArrayList<JSONObject> items) {
+    public ReviewAdapter(Context context, ArrayList<JSONObject> items) {
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mTrailers = items;
+        this.mReviews = items;
     }
 
     public int getCount() {
-        return mTrailers.size();
+        return mReviews.size();
     }
 
     public JSONObject getItem(int position) {
-        if (mTrailers.size() > 0)
-            return mTrailers.get(position);
+        if (mReviews.size() > 0)
+            return mReviews.get(position);
         return null;
     }
 
@@ -48,43 +46,33 @@ public class TrailerAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         View view = convertView;
 
-        JSONObject trailer = mTrailers.get(position);
-
+        JSONObject review = mReviews.get(position);
         if (view == null) {
-            view = mInflater.inflate(R.layout.trailer_list_item, parent, false);
+            view = mInflater.inflate(R.layout.review_list_item, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         }
 
         viewHolder = (ViewHolder) view.getTag();
 
-        String youtubeThumbURL = null;
         try {
-            youtubeThumbURL = "http://img.youtube.com/vi/" + trailer.getString("id") + "/0.jpg";
+            viewHolder.nameView.setText(review.getString("author"));
+            viewHolder.content.setText(review.getString("content"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // Load Movie Poster into Image View
-        viewHolder.imageView.setAdjustViewBounds(true);
-        Picasso.with(mContext).load(youtubeThumbURL).into(viewHolder.imageView);
-
-        try {
-            viewHolder.nameView.setText(trailer.getString("site") + ": " + trailer.getString("type"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         return view;
     }
 
     public static class ViewHolder {
-        public final ImageView imageView;
+        public final TextView content;
         public final TextView nameView;
 
         public ViewHolder(View view) {
-            imageView = (ImageView) view.findViewById(R.id.trailer_image_view);
-            nameView = (TextView) view.findViewById(R.id.trailer_text_view);
+            content = (TextView) view.findViewById(R.id.review_content);
+            nameView = (TextView) view.findViewById(R.id.review_user);
         }
     }
 }
