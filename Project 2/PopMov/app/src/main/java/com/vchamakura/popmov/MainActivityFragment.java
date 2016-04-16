@@ -33,7 +33,6 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivity.class.getName();
-    private static final String DTAG = "DFRAG";
     private static final String SORT_ORDER = "SORT_ORDER";
 
     String sortOrder = "popularity";
@@ -45,7 +44,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     public interface Callback {
-        public void onItemSelected(MovieItem movie);
+        void onItemSelected(MovieItem movie);
     }
 
     @Override

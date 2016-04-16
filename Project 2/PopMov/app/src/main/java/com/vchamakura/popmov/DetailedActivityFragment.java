@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,16 +25,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class DetailedActivityFragment extends Fragment {
     private static final String TAG = DetailedActivity.class.getName();
     private static final String imageURLPrefix = "http://image.tmdb.org/t/p/w342/";
     private static final String backDropURLPrefix = "http://image.tmdb.org/t/p/w780/";
-    private static final String DTAG = "DFRAG";
 
     View rootView;
 
@@ -72,8 +75,7 @@ public class DetailedActivityFragment extends Fragment {
 
             if (movieID != null) {
                 // Call the Async Task to fetch the movie data from the API
-                new MovieDetails().execute("https://api.themoviedb.org/3/movie/" + movieID + "?api_key=" +
-                        BuildConfig.TMDB_API_KEY);
+                new MovieDetails().execute(movieID);
             }
         }
         return rootView;
@@ -82,16 +84,32 @@ public class DetailedActivityFragment extends Fragment {
     public class MovieDetails extends AsyncTask<String, Drawable, MovieDetailItem> {
 
         @Override
-        protected MovieDetailItem doInBackground(String... urls) {
+        protected MovieDetailItem doInBackground(String... movieID) {
             MovieDetailItem movie = null;
+            ArrayList<JSONObject> videos = new ArrayList<>();
             try {
                 // Fetch & parse movie JSON data.
-                JSONObject movieJSON = downloadMovies(urls[0]);
+                JSONObject movieJSON = downloadData("https://api.themoviedb.org/3/movie/"
+                        + movieID[0] + "?api_key=" + BuildConfig.TMDB_API_KEY);
+                JSONObject videosJSON = downloadData("https://api.themoviedb.org/3/movie/"
+                        + movieID[0] + "/videos?api_key=" + BuildConfig.TMDB_API_KEY);
+
+                JSONArray results = videosJSON.getJSONArray("results");
+
+                for (int i = 0 ; i < results.length() ; i++) {
+                    JSONObject video = new JSONObject();
+                    video.put("id", ((JSONObject)results.get(i)).getString("id"));
+                    video.put("site", ((JSONObject)results.get(i)).getString("site"));
+                    video.put("type", ((JSONObject)results.get(i)).getString("type"));
+                    videos.add(video);
+                }
+
                 movie = new MovieDetailItem(movieJSON.getString("original_title"),
                         movieJSON.getString("id"), imageURLPrefix +
                         movieJSON.getString("poster_path"), backDropURLPrefix +
                         movieJSON.getString("backdrop_path"), movieJSON.getString("overview"),
-                        movieJSON.getString("vote_average"), movieJSON.getString("release_date"));
+                        movieJSON.getString("vote_average"), movieJSON.getString("release_date"),
+                        videos);
 
             } catch (IOException | JSONException e) {
                 Log.e(TAG, e.toString());
@@ -133,7 +151,7 @@ public class DetailedActivityFragment extends Fragment {
         }
     }
 
-    private JSONObject downloadMovies(String myURL) throws IOException, JSONException {
+    private JSONObject downloadData (String myURL) throws IOException, JSONException {
         InputStream is = null;
 
         try {

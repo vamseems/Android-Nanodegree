@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,10 +12,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     private static final String DTAG = "DFRAG";
 
     private boolean mTwoPane;
-
-    public boolean ismTwoPane() {
-        return mTwoPane;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             // Put Extra strings into the into to pass over to Detailed Activity
             detailedMovieIntent.putExtra("movie_title", movie.title);
             detailedMovieIntent.putExtra("movie_id", movie.movieID);
+            Log.e(DTAG, movie.movieID);
             detailedMovieIntent.putExtra("movie_poster_url", movie.posterURL);
 
             // Start the Detailed Activity
