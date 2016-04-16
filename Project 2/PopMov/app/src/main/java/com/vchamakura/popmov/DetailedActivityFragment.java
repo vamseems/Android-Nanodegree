@@ -1,9 +1,11 @@
 package com.vchamakura.popmov;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -39,6 +43,9 @@ public class DetailedActivityFragment extends Fragment {
     private static final String backDropURLPrefix = "http://image.tmdb.org/t/p/w780/";
 
     View rootView;
+    ArrayList<JSONObject> mTrailers = new ArrayList<>();
+    ListView trailersList;
+    TrailerAdapter trailerAdapter;
 
     public DetailedActivityFragment() {
     }
@@ -52,6 +59,7 @@ public class DetailedActivityFragment extends Fragment {
         bundle.putString("movie_id", movie.movieID);
         bundle.putString("movie_poster_url", movie.posterURL);
         f.setArguments(bundle);
+
         return f;
     }
 
@@ -62,6 +70,28 @@ public class DetailedActivityFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_detailed, container, false);
 
         Bundle bundle = this.getArguments();
+
+        // TODO - Set the list adapeter and Create the LIST adapter
+        trailersList = (ListView) rootView.findViewById(R.id.detail_trailers);
+        trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
+        trailersList.setAdapter(trailerAdapter);
+
+
+        trailersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO - Get the trailer detail to pass to youtube
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                try {
+                    intent.setData(Uri.parse("http://www.youtube.com/watch?v=" +
+                            mTrailers.get(position).getString("id")));
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                startActivity(intent);
+            }
+        });
+
         if (bundle != null) {
             String mTitle = bundle.getString("movie_title");
             String mPosterURL = bundle.getString("movie_poster_url");
@@ -95,10 +125,9 @@ public class DetailedActivityFragment extends Fragment {
                         + movieID[0] + "/videos?api_key=" + BuildConfig.TMDB_API_KEY);
 
                 JSONArray results = videosJSON.getJSONArray("results");
-
                 for (int i = 0 ; i < results.length() ; i++) {
                     JSONObject video = new JSONObject();
-                    video.put("id", ((JSONObject)results.get(i)).getString("id"));
+                    video.put("id", ((JSONObject)results.get(i)).getString("key"));
                     video.put("site", ((JSONObject)results.get(i)).getString("site"));
                     video.put("type", ((JSONObject)results.get(i)).getString("type"));
                     videos.add(video);
@@ -120,6 +149,11 @@ public class DetailedActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(MovieDetailItem movie) {
             super.onPostExecute(movie);
+
+            mTrailers = movie.videos;
+            trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
+            trailerAdapter.notifyDataSetChanged();
+            trailersList.setAdapter(trailerAdapter);
 
             final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
                     "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");

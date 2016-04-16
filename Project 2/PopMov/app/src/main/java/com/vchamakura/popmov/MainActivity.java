@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             // Put Extra strings into the into to pass over to Detailed Activity
             detailedMovieIntent.putExtra("movie_title", movie.title);
             detailedMovieIntent.putExtra("movie_id", movie.movieID);
-            Log.e(DTAG, movie.movieID);
             detailedMovieIntent.putExtra("movie_poster_url", movie.posterURL);
 
             // Start the Detailed Activity

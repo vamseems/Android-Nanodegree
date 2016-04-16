@@ -1,7 +1,6 @@
 package com.vchamakura.popmov;
 
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**

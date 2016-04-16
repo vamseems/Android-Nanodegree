@@ -3,6 +3,7 @@
     <string name="action_rating">Sort by Highest Rated</string>
     <string name="action_popularity">Sort by Popularity</string>
     <string name="action_refresh">Refresh</string>
+    <string name="detailed_movie_videos">Trailers / Videos</string>
     <string name="imageURLPrefix">http://image.tmdb.org/t/p/w342/</string>
     <string name="backDropURLPrefix">http://image.tmdb.org/t/p/w780/</string>
     <string name="title_activity_detailed">DetailedActivity</string>
