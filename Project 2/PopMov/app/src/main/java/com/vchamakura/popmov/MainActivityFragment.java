@@ -1,7 +1,6 @@
 package com.vchamakura.popmov;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivity.class.getName();
+    private static final String DTAG = "DFRAG";
     private static final String SORT_ORDER = "SORT_ORDER";
 
     String sortOrder = "popularity";
@@ -42,6 +42,10 @@ public class MainActivityFragment extends Fragment {
     ArrayList<MovieItem> mMovies = new ArrayList<>();
 
     public MainActivityFragment() {
+    }
+
+    public interface Callback {
+        public void onItemSelected(MovieItem movie);
     }
 
     @Override
@@ -64,14 +68,6 @@ public class MainActivityFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                // Make a new intent to go to Detailed Activity
-                Intent detailedMovieIntent = new Intent(getContext(), DetailedActivity.class);
-
-                // Put Extra strings into the into to pass over to Detailed Activity
-                MovieItem movie = mMovies.get(position);
-                detailedMovieIntent.putExtra("movie_title", movie.title);
-                detailedMovieIntent.putExtra("movie_id", movie.movieID);
-                detailedMovieIntent.putExtra("movie_poster_url", movie.posterURL);
 
                 // Write sort order to shared preferences file
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -79,8 +75,7 @@ public class MainActivityFragment extends Fragment {
                 editor.putString(SORT_ORDER, sortOrder);
                 editor.apply();
 
-                // Start the Detailed Activity
-                startActivity(detailedMovieIntent);
+                ((Callback) getActivity()).onItemSelected(mMovies.get(position));
             }
         });
 
@@ -109,7 +104,11 @@ public class MainActivityFragment extends Fragment {
         float sw = Math.min(dpHeight, dpWidth);
 
         if(orientation == Configuration.ORIENTATION_PORTRAIT) {
-            gridView.setNumColumns(2);
+            if (sw >= 600) {
+                gridView.setNumColumns(1);
+            } else {
+                gridView.setNumColumns(2);
+            }
         }
         else {
             if (sw >= 600) {

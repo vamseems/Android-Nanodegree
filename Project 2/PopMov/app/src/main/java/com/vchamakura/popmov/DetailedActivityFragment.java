@@ -1,6 +1,5 @@
 package com.vchamakura.popmov;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -32,10 +31,25 @@ import java.util.List;
 
 public class DetailedActivityFragment extends Fragment {
     private static final String TAG = DetailedActivity.class.getName();
+    private static final String imageURLPrefix = "http://image.tmdb.org/t/p/w342/";
+    private static final String backDropURLPrefix = "http://image.tmdb.org/t/p/w780/";
+    private static final String DTAG = "DFRAG";
 
     View rootView;
 
     public DetailedActivityFragment() {
+    }
+
+    public static DetailedActivityFragment newInstance(MovieItem movie) {
+
+        DetailedActivityFragment f = new DetailedActivityFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("movie_title", movie.title);
+        bundle.putString("movie_id", movie.movieID);
+        bundle.putString("movie_poster_url", movie.posterURL);
+        f.setArguments(bundle);
+        return f;
     }
 
     @Override
@@ -43,24 +57,25 @@ public class DetailedActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_detailed, container, false);
-        // Get the intent
-        Intent intent = getActivity().getIntent();
 
-        // Get Extra strings from the intent
-        String mTitle = intent.getStringExtra("movie_title");
-        String mPosterURL = intent.getStringExtra("movie_poster_url");
-        String movieID = intent.getStringExtra("movie_id");
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            String mTitle = bundle.getString("movie_title");
+            String mPosterURL = bundle.getString("movie_poster_url");
+            String movieID = bundle.getString("movie_id");
 
-        // Set the movie poster & title passed on from the previous activity
-        ImageView poster = (ImageView) rootView.findViewById(R.id.poster);
-        Picasso.with(getContext()).load(mPosterURL).into(poster);
+            // Set the movie poster & title passed on from the previous activity
+            ImageView poster = (ImageView) rootView.findViewById(R.id.poster);
+            Picasso.with(getContext()).load(mPosterURL).into(poster);
 
-        getActivity().setTitle(mTitle);
+            getActivity().setTitle(mTitle);
 
-
-        // Call the Async Task to fetch the movie data from the API
-        new MovieDetails().execute("https://api.themoviedb.org/3/movie/" + movieID + "?api_key=" +
-                BuildConfig.TMDB_API_KEY);
+            if (movieID != null) {
+                // Call the Async Task to fetch the movie data from the API
+                new MovieDetails().execute("https://api.themoviedb.org/3/movie/" + movieID + "?api_key=" +
+                        BuildConfig.TMDB_API_KEY);
+            }
+        }
         return rootView;
     }
 
@@ -73,8 +88,8 @@ public class DetailedActivityFragment extends Fragment {
                 // Fetch & parse movie JSON data.
                 JSONObject movieJSON = downloadMovies(urls[0]);
                 movie = new MovieDetailItem(movieJSON.getString("original_title"),
-                        movieJSON.getString("id"), getString(R.string.imageURLPrefix) +
-                        movieJSON.getString("poster_path"), getString(R.string.backDropURLPrefix) +
+                        movieJSON.getString("id"), imageURLPrefix +
+                        movieJSON.getString("poster_path"), backDropURLPrefix +
                         movieJSON.getString("backdrop_path"), movieJSON.getString("overview"),
                         movieJSON.getString("vote_average"), movieJSON.getString("release_date"));
 

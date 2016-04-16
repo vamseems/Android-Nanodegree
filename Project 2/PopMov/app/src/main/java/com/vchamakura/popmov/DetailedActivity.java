@@ -1,13 +1,12 @@
 package com.vchamakura.popmov;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 public class DetailedActivity extends AppCompatActivity {
+    private static final String DTAG = "DFRAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +16,18 @@ public class DetailedActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
+            Intent intent = getIntent();
+
+            // Get Extra strings from the intent
+            String mTitle = intent.getStringExtra("movie_title");
+            String mPosterURL = intent.getStringExtra("movie_poster_url");
+            String movieID = intent.getStringExtra("movie_id");
+
+            MovieItem movie = new MovieItem(mTitle, movieID, mPosterURL);
+
+            DetailedActivityFragment details = DetailedActivityFragment.newInstance(movie);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detailed_fragment_container, new DetailedActivityFragment())
+                    .add(R.id.detailed_fragment_container, details, DTAG)
                     .commit();
         }
 

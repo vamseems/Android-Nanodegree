@@ -3,5 +3,4 @@
     android:id="@+id/detailed_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.vchamakura.popmov.DetailedActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:context="com.vchamakura.popmov.DetailedActivity" />
