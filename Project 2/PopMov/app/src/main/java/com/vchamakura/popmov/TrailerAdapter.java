@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class TrailerAdapter extends BaseAdapter {
     private Context mContext;
-    private final LayoutInflater mInflater;
+    private LayoutInflater mInflater;
     private ArrayList<JSONObject> mTrailers;
 
     public TrailerAdapter(Context context, ArrayList<JSONObject> items) {

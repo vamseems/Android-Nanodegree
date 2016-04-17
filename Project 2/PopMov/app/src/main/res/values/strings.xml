@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">PopMov</string>
-    <string name="action_rating">Sort by Highest Rated</string>
-    <string name="action_popularity">Sort by Popularity</string>
+    <string name="action_rating">Highest Rated</string>
+    <string name="action_popularity">Popularity</string>
+    <string name="action_favorites">Favorites</string>
+    <string name="action_sort_by">Sort By</string>
     <string name="action_refresh">Refresh</string>
     <string name="detailed_movie_videos">Trailers / Videos</string>
     <string name="detailed_review_title">Reviews</string>

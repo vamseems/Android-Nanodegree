@@ -2,15 +2,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vchamakura.popmov.MainActivity">
-    <item
-        android:id="@+id/action_sort_order"
-        android:orderInCategory="100"
-        android:title="@string/action_rating"
-        app:showAsAction="never" />
+    <!--<item-->
+        <!--android:id="@+id/action_sort_order"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:title="@string/action_rating"-->
+        <!--app:showAsAction="never" />-->
 
     <item
         android:id="@+id/action_refresh"
         android:orderInCategory="101"
         android:title="@string/action_refresh"
         app:showAsAction="never" />
+    <item android:id="@+id/action_sort_order"
+        android:title="@string/action_sort_by"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/action_sort_by_popularity"
+                    android:title="@string/action_popularity" />
+                <item android:id="@+id/action_sort_by_rating"
+                    android:title="@string/action_rating" />
+                <item android:id="@+id/action_sort_by_favorite"
+                    android:title="@string/action_favorites" />
+            </group>
+        </menu>
+    </item>
 </menu>

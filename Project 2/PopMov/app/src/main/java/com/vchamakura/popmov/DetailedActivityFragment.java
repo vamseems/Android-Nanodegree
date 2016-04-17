@@ -1,6 +1,8 @@
 package com.vchamakura.popmov;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,20 +35,26 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DetailedActivityFragment extends Fragment {
     private static final String TAG = DetailedActivity.class.getName();
     private static final String imageURLPrefix = "http://image.tmdb.org/t/p/w342/";
     private static final String backDropURLPrefix = "http://image.tmdb.org/t/p/w780/";
+    private static final String FAVORITES = "FAVORITES";
 
     View rootView;
+    String movieID;
 
     ArrayList<JSONObject> mTrailers = new ArrayList<>();
     ArrayList<JSONObject> mReviews = new ArrayList<>();
 
     LinearListView trailersList;
     LinearListView reviewList;
+
+    CheckBox favoriteButton;
 
     TrailerAdapter trailerAdapter;
     ReviewAdapter reviewAdapter;
@@ -76,6 +85,7 @@ public class DetailedActivityFragment extends Fragment {
 
         trailersList = (LinearListView) rootView.findViewById(R.id.detail_trailers);
         reviewList = (LinearListView) rootView.findViewById(R.id.detail_reviews);
+        favoriteButton = (CheckBox) rootView.findViewById(R.id.detailed_favorite);
 
         trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
         trailersList.setAdapter(trailerAdapter);
@@ -112,10 +122,32 @@ public class DetailedActivityFragment extends Fragment {
             }
         });
 
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox checkBox = (CheckBox) v;
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("MyPrefs",
+                        Context.MODE_PRIVATE);
+                Set<String> favorites = sharedPref.getStringSet(FAVORITES, new HashSet<String>());
+                Set<String> newFavs = new HashSet<String>(favorites);
+
+                if (checkBox.isChecked()) {
+                    newFavs.add(movieID);
+                } else {
+                    newFavs.remove(movieID);
+                }
+
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.putStringSet(FAVORITES, newFavs);
+                editor.commit();
+            }
+        });
+
         if (bundle != null) {
             String mTitle = bundle.getString("movie_title");
             String mPosterURL = bundle.getString("movie_poster_url");
-            String movieID = bundle.getString("movie_id");
+            movieID = bundle.getString("movie_id");
 
             // Set the movie poster & title passed on from the previous activity
             ImageView poster = (ImageView) rootView.findViewById(R.id.poster);
@@ -195,6 +227,14 @@ public class DetailedActivityFragment extends Fragment {
             reviewAdapter = new ReviewAdapter(getContext(), mReviews);
             reviewAdapter.notifyDataSetChanged();
             reviewList.setAdapter(reviewAdapter);
+
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("MyPrefs",
+                    Context.MODE_PRIVATE);
+            Set<String> favorites = sharedPref.getStringSet(FAVORITES, new HashSet<String>());
+
+            if (favorites.contains(movieID)) {
+                favoriteButton.setChecked(true);
+            }
 
             final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
                     "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
