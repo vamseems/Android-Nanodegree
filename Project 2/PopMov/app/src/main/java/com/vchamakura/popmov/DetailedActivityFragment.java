@@ -13,12 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.linearlistview.LinearListView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -29,13 +28,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class DetailedActivityFragment extends Fragment {
     private static final String TAG = DetailedActivity.class.getName();
@@ -47,8 +44,8 @@ public class DetailedActivityFragment extends Fragment {
     ArrayList<JSONObject> mTrailers = new ArrayList<>();
     ArrayList<JSONObject> mReviews = new ArrayList<>();
 
-    ListView trailersList;
-    ListView reviewList;
+    LinearListView trailersList;
+    LinearListView reviewList;
 
     TrailerAdapter trailerAdapter;
     ReviewAdapter reviewAdapter;
@@ -77,8 +74,8 @@ public class DetailedActivityFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
 
-        trailersList = (ListView) rootView.findViewById(R.id.detail_trailers);
-        reviewList = (ListView) rootView.findViewById(R.id.detail_reviews);
+        trailersList = (LinearListView) rootView.findViewById(R.id.detail_trailers);
+        reviewList = (LinearListView) rootView.findViewById(R.id.detail_reviews);
 
         trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
         trailersList.setAdapter(trailerAdapter);
@@ -86,13 +83,28 @@ public class DetailedActivityFragment extends Fragment {
         reviewAdapter = new ReviewAdapter(getContext(), mReviews);
         reviewList.setAdapter(reviewAdapter);
 
-        trailersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        trailersList.setOnItemClickListener(new LinearListView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(LinearListView linearListView, View view,
+                                    int position, long id) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 try {
                     intent.setData(Uri.parse("http://www.youtube.com/watch?v=" +
                             mTrailers.get(position).getString("id")));
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                startActivity(intent);
+            }
+        });
+
+        reviewList.setOnItemClickListener(new LinearListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(LinearListView linearListView, View view,
+                                    int position, long id) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                try {
+                    intent.setData(Uri.parse(mReviews.get(position).getString("url")));
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage());
                 }

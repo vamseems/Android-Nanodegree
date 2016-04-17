@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -37,8 +36,8 @@ public class MovieAdapter extends BaseAdapter {
     }
 
     public long getItemId(int position) {
-//        if (mMovies.size() > 0)
-//            return Long.parseLong(mMovies.get(position).movieID);
+        if (mMovies.size() > 0)
+            return Long.parseLong(mMovies.get(position).movieID);
         return 0;
     }
 

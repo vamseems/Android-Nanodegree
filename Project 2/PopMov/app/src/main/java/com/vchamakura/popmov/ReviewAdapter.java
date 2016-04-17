@@ -1,6 +1,7 @@
 package com.vchamakura.popmov;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class ReviewAdapter extends BaseAdapter {
     }
 
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -57,7 +58,7 @@ public class ReviewAdapter extends BaseAdapter {
 
         try {
             viewHolder.nameView.setText(review.getString("author"));
-            viewHolder.content.setText(review.getString("content"));
+            viewHolder.content.setText(Html.fromHtml(review.getString("content")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
