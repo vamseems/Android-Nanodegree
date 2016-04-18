@@ -219,50 +219,52 @@ public class DetailedActivityFragment extends Fragment {
             super.onPostExecute(movie);
 
             mTrailers = movie.videos;
-            trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
-            trailerAdapter.notifyDataSetChanged();
-            trailersList.setAdapter(trailerAdapter);
-
             mReviews = movie.reviews;
-            reviewAdapter = new ReviewAdapter(getContext(), mReviews);
-            reviewAdapter.notifyDataSetChanged();
-            reviewList.setAdapter(reviewAdapter);
+            if (getContext() != null) {
+                trailerAdapter = new TrailerAdapter(getContext(), mTrailers);
+                trailerAdapter.notifyDataSetChanged();
+                trailersList.setAdapter(trailerAdapter);
 
-            SharedPreferences sharedPref = getActivity().getSharedPreferences("MyPrefs",
-                    Context.MODE_PRIVATE);
-            Set<String> favorites = sharedPref.getStringSet(FAVORITES, new HashSet<String>());
+                reviewAdapter = new ReviewAdapter(getContext(), mReviews);
+                reviewAdapter.notifyDataSetChanged();
+                reviewList.setAdapter(reviewAdapter);
 
-            if (favorites.contains(movieID)) {
-                favoriteButton.setChecked(true);
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("MyPrefs",
+                        Context.MODE_PRIVATE);
+                Set<String> favorites = sharedPref.getStringSet(FAVORITES, new HashSet<String>());
+
+                if (favorites.contains(movieID)) {
+                    favoriteButton.setChecked(true);
+                }
+
+                final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
+                        "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+                // Parse the release date to desired(Month 'YYYY) format
+                int year = Integer.parseInt(movie.releaseDate.split("-")[0]);
+                int month = Integer.parseInt(movie.releaseDate.split("-")[1]);
+                String releaseDate = months.get(month - 1) + " " + year;
+
+                // Get all the required elements in the view
+                ImageView backDrop = (ImageView) rootView.findViewById(R.id.backDrop);
+                TextView movieTitle = (TextView) rootView.findViewById(R.id.detailed_movie_title);
+                TextView movieDate = (TextView) rootView.findViewById(R.id.detailed_movie_release_date);
+                TextView rating = (TextView) rootView.findViewById(R.id.detailed_movie_ratings_number);
+                RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.detailed_movie_ratings);
+                TextView moviePlot = (TextView) rootView.findViewById(R.id.detailed_movie_plot);
+
+                // Change color of the stars in the RatingsBar
+                LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+                stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+
+                // Set the elements in the view to the movie details
+                Picasso.with(getContext()).load(movie.backDrop).into(backDrop);
+                movieTitle.setText(movie.title);
+                movieDate.setText(releaseDate);
+                rating.setText(movie.voteAverage);
+                ratingBar.setRating(Float.valueOf(movie.voteAverage));
+                moviePlot.setText(movie.plot);
             }
-
-            final List<String> months = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May",
-                    "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
-
-            // Parse the release date to desired(Month 'YYYY) format
-            int year = Integer.parseInt(movie.releaseDate.split("-")[0]);
-            int month = Integer.parseInt(movie.releaseDate.split("-")[1]);
-            String releaseDate = months.get(month - 1) + " " + year;
-
-            // Get all the required elements in the view
-            ImageView backDrop = (ImageView) rootView.findViewById(R.id.backDrop);
-            TextView movieTitle = (TextView) rootView.findViewById(R.id.detailed_movie_title);
-            TextView movieDate = (TextView) rootView.findViewById(R.id.detailed_movie_release_date);
-            TextView rating = (TextView) rootView.findViewById(R.id.detailed_movie_ratings_number);
-            RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.detailed_movie_ratings);
-            TextView moviePlot = (TextView) rootView.findViewById(R.id.detailed_movie_plot);
-
-            // Change color of the stars in the RatingsBar
-            LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-            stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
-
-            // Set the elements in the view to the movie details
-            Picasso.with(getContext()).load(movie.backDrop).into(backDrop);
-            movieTitle.setText(movie.title);
-            movieDate.setText(releaseDate);
-            rating.setText(movie.voteAverage);
-            ratingBar.setRating(Float.valueOf(movie.voteAverage));
-            moviePlot.setText(movie.plot);
         }
     }
 
